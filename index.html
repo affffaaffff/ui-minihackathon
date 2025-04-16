@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-black text-white scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voxora – Voice-first Social Space</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      body {
+        font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+        overflow-x: hidden;
+        background-color: #000;
+        color: #f5f5f7;
+        line-height: 1.47059;
+        letter-spacing: -0.022em;
+      }
+
+      .gradient-text {
+        background: linear-gradient(135deg, #6366f1, #ec4899 70%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero {
+        position: relative;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        text-align: center;
+      }
+
+      .parallax-text {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(1);
+        font-size: 7rem;
+        font-weight: 600;
+        letter-spacing: -0.05em;
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        z-index: 50;
+        transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: transform, opacity;
+      }
+
+      .section-content {
+        position: relative;
+        z-index: 10;
+      }
+      
+      .glass-effect {
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+      }
+      
+      .feature-gradient-1 {
+        background: linear-gradient(145deg, rgba(30, 30, 35, 0.5), rgba(20, 20, 25, 0.8));
+        border: 1px solid rgba(130, 130, 255, 0.2);
+      }
+      
+      .feature-gradient-2 {
+        background: linear-gradient(145deg, rgba(30, 30, 35, 0.5), rgba(20, 20, 25, 0.8));
+        border: 1px solid rgba(255, 170, 76, 0.2);
+      }
+      
+      .feature-gradient-3 {
+        background: linear-gradient(145deg, rgba(30, 30, 35, 0.5), rgba(20, 20, 25, 0.8));
+        border: 1px solid rgba(119, 230, 247, 0.2);
+      }
+      
+      button {
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      
+      button:hover {
+        transform: scale(1.05);
+      }
+      
+      .glow {
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+      }
+
+      .room-preview {
+        background: linear-gradient(170deg, #1a1a23, #0c0c14);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .room-card {
+        transform: perspective(1000px) rotateX(5deg);
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      
+      .room-card:hover {
+        transform: perspective(1000px) rotateX(0deg) scale(1.02);
+      }
+      
+      .avatar-glow-host {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+      }
+      
+      .avatar-glow-speaker {
+        box-shadow: 0 0 20px rgba(255, 170, 76, 0.5);
+      }
+      
+      .action-button {
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+      }
+
+      /* Sparkle effect */
+      .sparkle-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .sparkle {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 70%);
+        border-radius: 50%;
+        animation: sparkle-animation 1s ease-in-out infinite;
+        opacity: 0;
+      }
+
+      @keyframes sparkle-animation {
+        0% {
+          transform: scale(0.5) translate(-50%, -50%);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.5) translate(-50%, -50%);
+          opacity: 0.5;
+        }
+        100% {
+          transform: scale(0.5) translate(-50%, -50%);
+          opacity: 0;
+        }
+      }
+
+      /* Add sparkle container to feature cards and buttons */
+      .feature-card:hover .sparkle-container,
+      button:hover .sparkle-container {
+        animation: sparkle-container-animation 1s ease-in-out infinite;
+      }
+
+      @keyframes sparkle-container-animation {
+        0%, 100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 glass-effect bg-black/80 z-50 transition-all duration-700 ease-in-out border-b border-gray-800/30">
+      <div class="max-w-6xl mx-auto px-6 md:px-8 py-4 flex items-center justify-between">
+        <div class="text-2xl font-semibold tracking-tight gradient-text">Voxora</div>
+        <div class="space-x-8 hidden md:flex text-sm font-medium text-gray-300">
+          <a href="#features" class="hover:text-white transition duration-300">Features</a>
+          <a href="#rooms" class="hover:text-white transition duration-300">Experience</a>
+          <a href="#about" class="hover:text-white transition duration-300">About</a>
+        </div>
+        <button class="bg-white text-black px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-200 transition shadow-lg">Join Voxora</button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero bg-black">
+      <div id="voxoraTitle" class="parallax-text">VOXORA</div>
+      <div class="absolute bottom-12 left-0 right-0 flex justify-center">
+        <div class="animate-bounce">
+          <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Intro Text Section -->
+    <div class="py-24 px-6 md:px-20 bg-black text-center max-w-4xl mx-auto">
+      <h2 class="text-4xl md:text-5xl font-semibold mb-8 tracking-tight">Experience the future of <span class="gradient-text">social audio</span></h2>
+      <p class="text-lg md:text-xl text-gray-400 leading-relaxed">Voxora creates spaces where voices connect in real-time, bringing people together through the power of conversation. Our minimalist design focuses on what matters most — your voice.</p>
+    </div>
+
+    <!-- Features Section -->
+    <div id="features" class="section-content py-24 px-6 md:px-20 bg-gradient-to-b from-black to-gray-900">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-semibold mb-4 text-center tracking-tight">Designed for connection</h2>
+        <p class="text-gray-400 text-center mb-16 max-w-2xl mx-auto">Every detail thoughtfully crafted to enhance your audio experience</p>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="feature-card feature-gradient-1 rounded-2xl p-8 hover:shadow-2xl transition duration-700 shadow-lg relative">
+            <div class="sparkle-container">
+              <div class="sparkle" style="top: 20%; left: 30%;"></div>
+              <div class="sparkle" style="top: 50%; left: 70%;"></div>
+              <div class="sparkle" style="top: 80%; left: 40%;"></div>
+            </div>
+            <div class="h-12 w-12 rounded-full bg-indigo-500/20 flex items-center justify-center mb-6">
+              <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-3 text-white">Crystal-Clear Audio</h3>
+            <p class="text-gray-400 leading-relaxed">Immersive spatial audio technology that makes conversations feel natural and intimate, no matter the distance.</p>
+          </div>
+          
+          <div class="feature-card feature-gradient-2 rounded-2xl p-8 hover:shadow-2xl transition duration-700 shadow-lg">
+            <div class="h-12 w-12 rounded-full bg-amber-500/20 flex items-center justify-center mb-6">
+              <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-3 text-white">Intuitive Room Controls</h3>
+            <p class="text-gray-400 leading-relaxed">Seamlessly transition between hosting, speaking, or just listening with elegant, gesture-based controls.</p>
+            <div class="sparkle-container"></div>
+          </div>
+          
+          <div class="feature-card feature-gradient-3 rounded-2xl p-8 hover:shadow-2xl transition duration-700 shadow-lg">
+            <div class="h-12 w-12 rounded-full bg-cyan-500/20 flex items-center justify-center mb-6">
+              <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-3 text-white">Minimalist Design</h3>
+            <p class="text-gray-400 leading-relaxed">A visually stunning interface that fades into the background, allowing conversations to take center stage.</p>
+            <div class="sparkle-container"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Room Preview -->
+    <section id="rooms" class="py-24 px-6 md:px-20 bg-black relative overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-gray-900 to-transparent"></div>
+      
+      <div class="max-w-6xl mx-auto relative">
+        <h2 class="text-3xl md:text-4xl font-semibold mb-4 text-center tracking-tight">The room experience</h2>
+        <p class="text-gray-400 text-center mb-16 max-w-2xl mx-auto">Where ideas flow naturally and voices are heard</p>
+        
+        <div class="room-card room-preview p-12 text-center max-w-4xl mx-auto shadow-2xl">
+          <!-- Active speaker indicator -->
+          <div class="w-full h-1 bg-gradient-to-r from-indigo-500 to-pink-500 rounded-full mb-12 opacity-80"></div>
+          
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            <div class="space-y-3">
+              <div class="relative mx-auto">
+                <div class="absolute inset-0 rounded-full animate-pulse avatar-glow-host"></div>
+                <img src="2.jpeg" class="w-24 h-24 rounded-full border-2 border-indigo-500 relative z-10" alt="Host avatar" />
+                <div class="absolute bottom-0 right-0 bg-indigo-500 rounded-full p-1 border-2 border-black">
+                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                  </svg>
+                </div>
+              </div>
+              <p class="text-sm font-medium">Emma Davis</p>
+              <p class="text-xs text-indigo-400">Host • Speaking</p>
+            </div>
+            
+            <div class="space-y-3">
+              <div class="relative mx-auto">
+                <div class="absolute inset-0 rounded-full animate-pulse avatar-glow-speaker"></div>
+                <img src="3.jpeg" class="w-24 h-24 rounded-full border-2 border-amber-500 relative z-10" alt="Speaker avatar" />
+                <div class="absolute bottom-0 right-0 bg-amber-500 rounded-full p-1 border-2 border-black">
+                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                  </svg>
+                </div>
+              </div>
+              <p class="text-sm font-medium">James Wilson</p>
+              <p class="text-xs text-amber-400">Speaker • Muted</p>
+            </div>
+            
+            <div class="space-y-3">
+              <div class="relative mx-auto">
+                <img src="1.jpeg" class="w-24 h-24 rounded-full border border-gray-700 opacity-90 relative z-10" alt="Listener avatar" />
+              </div>
+              <p class="text-sm font-medium">Sofia Chen</p>
+              <p class="text-xs text-gray-500">Listener</p>
+            </div>
+            
+            <div class="space-y-3">
+              <div class="relative mx-auto">
+                <img src="4.jpeg" class="w-24 h-24 rounded-full border border-gray-700 opacity-90 relative z-10" alt="Listener with hand raised avatar" />
+                <div class="absolute bottom-0 right-0 bg-cyan-500 rounded-full p-1 border-2 border-black">
+                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"></path>
+                  </svg>
+                </div>
+              </div>
+              <p class="text-sm font-medium">Marco Torres</p>
+              <p class="text-xs text-cyan-400">Hand Raised</p>
+            </div>
+          </div>
+          
+          <p class="text-gray-400 text-sm mb-8">"Design Thinking in 2025: Breaking Creative Boundaries"</p>
+          
+          <div class="inline-flex space-x-4 bg-black/30 p-1 rounded-full backdrop-blur">
+            <button class="action-button bg-white/10 hover:bg-white/20 px-6 py-3 rounded-full text-sm font-medium border border-white/10 flex items-center space-x-2 relative">
+              <div class="sparkle-container">
+                <div class="sparkle" style="top: 20%; left: 30%;"></div>
+                <div class="sparkle" style="top: 50%; left: 70%;"></div>
+                <div class="sparkle" style="top: 80%; left: 40%;"></div>
+              </div>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+              </svg>
+              <span>Mute</span>
+            </button>
+            
+            <button class="action-button bg-white/10 hover:bg-white/20 px-6 py-3 rounded-full text-sm font-medium border border-white/10 flex items-center space-x-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"></path>
+              </svg>
+              <span>Raise Hand</span>
+              <div class="sparkle-container"></div>
+            </button>
+            
+            <button class="action-button bg-white/10 hover:bg-white/20 px-6 py-3 rounded-full text-sm font-medium border border-red-500/30 flex items-center space-x-2 text-red-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+              </svg>
+              <span>Leave</span>
+              <div class="sparkle-container"></div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-24 px-6 md:px-20 bg-gradient-to-b from-black to-gray-900">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-semibold mb-4 text-center tracking-tight">What people are saying</h2>
+        <p class="text-gray-400 text-center mb-16 max-w-2xl mx-auto">Join thousands already experiencing the Voxora difference</p>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="bg-black/50 border border-gray-800 rounded-2xl p-8 backdrop-blur-sm">
+            <div class="flex items-center mb-6">
+              <img src="5.jpeg" class="w-12 h-12 rounded-full mr-4" alt="User avatar" />
+              <div>
+                <p class="font-medium">Alicia Reynolds</p>
+                <p class="text-gray-500 text-sm">Product Designer</p>
+              </div>
+            </div>
+            <p class="text-gray-300 italic">"Voxora has transformed how our design team collaborates remotely. The audio quality is phenomenal, and the minimal interface lets us focus on what matters."</p>
+          </div>
+          
+          <div class="bg-black/50 border border-gray-800 rounded-2xl p-8 backdrop-blur-sm">
+            <div class="flex items-center mb-6">
+              <img src="6.jpeg" class="w-12 h-12 rounded-full mr-4" alt="User avatar" />
+              <div>
+                <p class="font-medium">David Mercer</p>
+                <p class="text-gray-500 text-sm">Community Leader</p>
+              </div>
+            </div>
+            <p class="text-gray-300 italic">"I host weekly discussions with members across the globe. Voxora's intuitive controls make managing these conversations effortless and engaging."</p>
+          </div>
+          
+          <div class="bg-black/50 border border-gray-800 rounded-2xl p-8 backdrop-blur-sm">
+            <div class="flex items-center mb-6">
+              <img src="7.jpeg" class="w-12 h-12 rounded-full mr-4" alt="User avatar" />
+              <div>
+                <p class="font-medium">Nadia Patel</p>
+                <p class="text-gray-500 text-sm">Podcast Host</p>
+              </div>
+            </div>
+            <p class="text-gray-300 italic">"The audio clarity on Voxora is unmatched. My listeners appreciate how natural our conversations feel, and I love how easy it is to bring guests on."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 px-6 md:px-20 bg-black relative overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-gray-900 to-transparent"></div>
+      
+      <!-- Abstract background shapes -->
+      <div class="absolute inset-0 overflow-hidden opacity-20">
+        <div class="absolute top-20 left-20 w-64 h-64 rounded-full bg-indigo-900 filter blur-3xl"></div>
+        <div class="absolute bottom-20 right-20 w-64 h-64 rounded-full bg-pink-900 filter blur-3xl"></div>
+      </div>
+      
+      <div class="max-w-4xl mx-auto text-center relative">
+        <h2 class="text-3xl md:text-5xl font-semibold mb-6 tracking-tight">Join the conversation</h2>
+        <p class="text-xl text-gray-400 mb-10">Experience a new way to connect through the power of voice.</p>
+        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 justify-center">
+          <button class="bg-white text-black px-8 py-4 rounded-full text-lg font-medium hover:bg-gray-200 transition shadow-lg glow">Get Started
+            <div class="sparkle-container"></div>
+          </button>
+          <button class="bg-black text-white px-8 py-4 rounded-full text-lg font-medium border border-white/30 hover:bg-white/10 transition">Learn More
+            <div class="sparkle-container"></div>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 md:px-20 border-t border-gray-800 bg-black">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+          <div class="text-2xl font-semibold tracking-tight gradient-text mb-6 md:mb-0">Voxora</div>
+          <div class="flex space-x-8 text-sm text-gray-400">
+            <a href="#" class="hover:text-white transition">Privacy</a>
+            <a href="#" class="hover:text-white transition">Terms</a>
+            <a href="#" class="hover:text-white transition">Support</a>
+            <a href="#" class="hover:text-white transition">Contact</a>
+          </div>
+        </div>
+        <div class="text-center md:text-left text-gray-500 text-sm">
+          © 2025 <span class="gradient-text">Voxora</span> – Where conversations come to life.
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+      const title = document.getElementById('voxoraTitle');
+      const navbar = document.getElementById('navbar');
+
+      
+      window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+
+        // Adjusted logic for smoother fade-out and visibility
+        if (scrollY > 300) {
+          const scale = Math.max(1 - (scrollY - 300) / 100, 0.5); // Minimum scale is 0.7
+          const opacity = Math.max(1 - (scrollY - 300) / 100, 0); // Minimum opacity is 0.5
+
+          title.style.transform = `translate(-50%, -50%) scale(${scale})`;
+          title.style.opacity = opacity;
+          title.style.visibility = 'visible';
+          title.style.zIndex = '50';
+        } else {
+          // Reset to full visibility when scrolled back up
+          title.style.transform = 'translate(-50%, -50%) scale(1)';
+          title.style.opacity = '1';
+          title.style.visibility = 'visible';
+          title.style.zIndex = '50';
+        }
+
+        // Navbar opacity
+        if (scrollY > 50) {
+          navbar.classList.add('border-b', 'shadow-lg');
+        } else {
+          navbar.classList.remove('border-b', 'shadow-lg');
+        }
+      });
+      // Animation for feature cards
+      const featureObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            anime({
+              targets: '.feature-card',
+              translateY: [60, 0],
+              opacity: [0, 1],
+              delay: anime.stagger(150),
+              duration: 1200,
+              easing: 'cubicBezier(.16,1,.3,1)',
+            });
+            featureObserver.disconnect();
+          }
+        });
+      }, { threshold: 0.2 });
+
+      featureObserver.observe(document.getElementById('features'));
+
+      // Animation for section headings
+      const headings = document.querySelectorAll('h2');
+      const headingObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            anime({
+              targets: entry.target,
+              translateY: [30, 0],
+              opacity: [0, 1],
+              duration: 1200,
+              easing: 'cubicBezier(.16,1,.3,1)'
+            });
+            headingObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+
+      headings.forEach(h => {
+        h.style.opacity = 0;
+        headingObserver.observe(h);
+      });
+      
+      // Room card animation
+      const roomObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            anime({
+              targets: '.room-card',
+              translateY: [80, 0],
+              opacity: [0, 1],
+              duration: 1500,
+              easing: 'cubicBezier(.16,1,.3,1)'
+            });
+            roomObserver.disconnect();
+          }
+        });
+      }, { threshold: 0.2 });
+      
+      const roomCard = document.querySelector('.room-card');
+      roomCard.style.opacity = 0;
+      roomObserver.observe(document.getElementById('rooms'));
+      
+      // Testimonials animation
+      const testimonialObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            anime({
+              targets: entry.target.querySelectorAll('.bg-black\\/50'),
+              translateY: [40, 0],
+              opacity: [0, 1],
+              delay: anime.stagger(150),
+              duration: 1000,
+              easing: 'cubicBezier(.16,1,.3,1)'
+            });
+            testimonialObserver.disconnect();
+          }
+        });
+      }, { threshold: 0.3 });
+      
+      // Observe testimonials section
+      const testimonialSection = document.querySelector('section:nth-of-type(3)');
+      if (testimonialSection) {
+        testimonialObserver.observe(testimonialSection);
+      }
+      
+      // CTA section animation
+      const ctaObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Animate heading and paragraph
+            anime({
+              targets: entry.target.querySelector('h2'),
+              translateY: [30, 0],
+              opacity: [0, 1],
+              duration: 1200,
+              easing: 'cubicBezier(.16,1,.3,1)'
+            });
+            
+            anime({
+              targets: entry.target.querySelector('p'),
+              translateY: [30, 0],
+              opacity: [0, 1],
+              delay: 200,
+              duration: 1200,
+              easing: 'cubicBezier(.16,1,.3,1)'
+            });
+            
+            // Animate buttons
+            anime({
+              targets: entry.target.querySelectorAll('button'),
+              scale: [0.9, 1],
+              opacity: [0, 1],
+              delay: anime.stagger(150, {start: 400}),
+              duration: 1000,
+              easing: 'cubicBezier(.16,1,.3,1)'
+            });
+            
+            ctaObserver.disconnect();
+          }
+        });
+      }, { threshold: 0.3 });
+      
+      // Observe CTA section
+      const ctaSection = document.querySelector('section:nth-of-type(4)');
+      if (ctaSection) {
+        ctaObserver.observe(ctaSection);
+      }
+      
+      // Footer animation
+      const footerObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            anime({
+              targets: 'footer > div > div',
+              translateY: [20, 0],
+              opacity: [0, 1],
+              delay: anime.stagger(150),
+              duration: 1000,
+              easing: 'cubicBezier(.16,1,.3,1)'
+            });
+            footerObserver.disconnect();
+          }
+        });
+      }, { threshold: 0.5 });
+      
+      footerObserver.observe(document.querySelector('footer'));
+      
+      // Avatar floating animation
+      anime({
+        targets: '.room-preview img.rounded-full',
+        translateY: function() {
+          return anime.random(-5, 5);
+        },
+        duration: function() {
+          return anime.random(3000, 5000);
+        },
+        loop: true,
+        direction: 'alternate',
+        easing: 'easeInOutSine',
+        delay: anime.stagger(300)
+      });
+      
+      // Active speaker indicator pulse animation
+      anime({
+        targets: '.room-preview .w-full.h-1',
+        opacity: [0.4, 0.8],
+        duration: 1500,
+        direction: 'alternate',
+        loop: true,
+        easing: 'easeInOutSine'
+      });
+      
+      // Smooth scrolling for navigation links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            window.scrollTo({
+              top: target.offsetTop,
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+      
+      // Button hover animation refinement
+      document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('mouseenter', () => {
+          anime({
+            targets: button,
+            scale: 1.05,
+            boxShadow: '0 0 15px rgba(99, 102, 241, 0.7)',
+            duration: 300,
+            easing: 'cubicBezier(.16,1,.3,1)'
+          });
+        });
+        
+        button.addEventListener('mouseleave', () => {
+          anime({
+            targets: button,
+            scale: 1,
+            boxShadow: button.classList.contains('glow') ? '0 0 15px rgba(99, 102, 241, 0.5)' : '0 0 0 rgba(0,0,0,0)',
+            duration: 300,
+            easing: 'cubicBezier(.16,1,.3,1)'
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
