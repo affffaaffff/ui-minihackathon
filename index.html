@@ -21,9 +21,7 @@
         background: linear-gradient(135deg, #6366f1, #ec4899 70%);
         -webkit-background-clip: text;
         background-clip: text;
-        background-clip: text;
         -webkit-text-fill-color: transparent;
-        background-clip: text;
       }
 
       .hero {
@@ -62,20 +60,14 @@
         backdrop-filter: blur(20px);
       }
       
-      .feature-gradient-1 {
+      .feature-card {
         background: linear-gradient(145deg, rgba(30, 30, 35, 0.5), rgba(20, 20, 25, 0.8));
-        border: 1px solid rgba(130, 130, 255, 0.2);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       }
       
-      .feature-gradient-2 {
-        background: linear-gradient(145deg, rgba(30, 30, 35, 0.5), rgba(20, 20, 25, 0.8));
-        border: 1px solid rgba(255, 170, 76, 0.2);
-      }
-      
-      .feature-gradient-3 {
-        background: linear-gradient(145deg, rgba(30, 30, 35, 0.5), rgba(20, 20, 25, 0.8));
-        border: 1px solid rgba(119, 230, 247, 0.2);
-      }
+      .feature-gradient-1 { border: 1px solid rgba(130, 130, 255, 0.2); }
+      .feature-gradient-2 { border: 1px solid rgba(255, 170, 76, 0.2); }
+      .feature-gradient-3 { border: 1px solid rgba(119, 230, 247, 0.2); }
       
       button {
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -104,20 +96,14 @@
         transform: perspective(1000px) rotateX(0deg) scale(1.02);
       }
       
-      .avatar-glow-host {
-        box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
-      }
-      
-      .avatar-glow-speaker {
-        box-shadow: 0 0 20px rgba(255, 170, 76, 0.5);
-      }
+      .avatar-glow-host { box-shadow: 0 0 20px rgba(99, 102, 241, 0.5); }
+      .avatar-glow-speaker { box-shadow: 0 0 20px rgba(255, 170, 76, 0.5); }
       
       .action-button {
         -webkit-backdrop-filter: blur(12px);
         backdrop-filter: blur(12px);
       }
 
-      /* Sparkle effect */
       .sparkle-container {
         position: absolute;
         top: 0;
@@ -153,25 +139,20 @@
         }
       }
 
-      /* Add sparkle container to feature cards and buttons */
       .feature-card:hover .sparkle-container,
       button:hover .sparkle-container {
         animation: sparkle-container-animation 1s ease-in-out infinite;
       }
 
       @keyframes sparkle-container-animation {
-        0%, 100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.5;
-        }
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
       }
     </style>
   </head>
   <body>
     <!-- Navbar -->
-    <nav id="navbar" class="fixed top-0 left-0 right-0 glass-effect bg-black/80 z-50 transition-all duration-700 ease-in-out border-b border-gray-800/30">
+    <nav id="navbar" class="fixed top-0 left-0 right-0 glass-effect bg-black/80 z-50 transition-all duration-700 ease-in-out">
       <div class="max-w-6xl mx-auto px-6 md:px-8 py-4 flex items-center justify-between">
         <div class="text-2xl font-semibold tracking-tight gradient-text">Voxora</div>
         <div class="space-x-8 hidden md:flex text-sm font-medium text-gray-300">
@@ -433,244 +414,143 @@
 
     <!-- Scripts -->
     <script>
+      // DOM elements
       const title = document.getElementById('voxoraTitle');
       const navbar = document.getElementById('navbar');
-
       
+      // Scroll event handler
       window.addEventListener('scroll', () => {
         const scrollY = window.scrollY;
 
-        // Adjusted logic for smoother fade-out and visibility
+        // Title parallax effect
         if (scrollY > 300) {
-          const scale = Math.max(1 - (scrollY - 300) / 100, 0.5); // Minimum scale is 0.7
-          const opacity = Math.max(1 - (scrollY - 300) / 100, 0); // Minimum opacity is 0.5
-
+          const scale = Math.max(1 - (scrollY - 300) / 100, 0.5);
+          const opacity = Math.max(1 - (scrollY - 300) / 100, 0);
           title.style.transform = `translate(-50%, -50%) scale(${scale})`;
           title.style.opacity = opacity;
-          title.style.visibility = 'visible';
-          title.style.zIndex = '50';
         } else {
-          // Reset to full visibility when scrolled back up
           title.style.transform = 'translate(-50%, -50%) scale(1)';
           title.style.opacity = '1';
-          title.style.visibility = 'visible';
-          title.style.zIndex = '50';
         }
 
-        // Navbar opacity
+        // Navbar styling
         if (scrollY > 50) {
           navbar.classList.add('border-b', 'shadow-lg');
         } else {
           navbar.classList.remove('border-b', 'shadow-lg');
         }
       });
-      // Animation for feature cards
-      const featureObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            anime({
-              targets: '.feature-card',
-              translateY: [60, 0],
-              opacity: [0, 1],
-              delay: anime.stagger(150),
-              duration: 1200,
-              easing: 'cubicBezier(.16,1,.3,1)',
-            });
-            featureObserver.disconnect();
-          }
-        });
-      }, { threshold: 0.2 });
-
-      featureObserver.observe(document.getElementById('features'));
-
-      // Animation for section headings
-      const headings = document.querySelectorAll('h2');
-      const headingObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            anime({
-              targets: entry.target,
-              translateY: [30, 0],
-              opacity: [0, 1],
-              duration: 1200,
-              easing: 'cubicBezier(.16,1,.3,1)'
-            });
-            headingObserver.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.5 });
-
-      headings.forEach(h => {
-        h.style.opacity = 0;
-        headingObserver.observe(h);
-      });
       
-      // Room card animation
-      const roomObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            anime({
-              targets: '.room-card',
-              translateY: [80, 0],
-              opacity: [0, 1],
-              duration: 1500,
-              easing: 'cubicBezier(.16,1,.3,1)'
-            });
-            roomObserver.disconnect();
-          }
+      // Animation helpers
+      const animateSection = (target, props, options = {}) => {
+        return anime({
+          targets: target,
+          ...props,
+          duration: options.duration || 1200,
+          easing: options.easing || 'cubicBezier(.16,1,.3,1)',
+          delay: options.delay || 0
         });
-      }, { threshold: 0.2 });
+      };
       
-      const roomCard = document.querySelector('.room-card');
-      roomCard.style.opacity = 0;
-      roomObserver.observe(document.getElementById('rooms'));
-      
-      // Testimonials animation
-      const testimonialObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            anime({
-              targets: entry.target.querySelectorAll('.bg-black\\/50'),
-              translateY: [40, 0],
-              opacity: [0, 1],
-              delay: anime.stagger(150),
-              duration: 1000,
-              easing: 'cubicBezier(.16,1,.3,1)'
-            });
-            testimonialObserver.disconnect();
-          }
-        });
-      }, { threshold: 0.3 });
-      
-      // Observe testimonials section
-      const testimonialSection = document.querySelector('section:nth-of-type(3)');
-      if (testimonialSection) {
-        testimonialObserver.observe(testimonialSection);
+      // Create intersection observers
+const createObserver = (elements, callback, options = {}) => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        callback(entry.target);
+        if (options.once) {
+          observer.unobserve(entry.target);
+        }
       }
+    });
+  }, {
+    threshold: options.threshold || 0.1,
+    rootMargin: options.rootMargin || '0px'
+  });
+
+  if (elements instanceof NodeList || Array.isArray(elements)) {
+    elements.forEach(el => observer.observe(el));
+  } else {
+    observer.observe(elements);
+  }
+
+  return observer;
+};
+
+// Apply animations on scroll
+document.addEventListener('DOMContentLoaded', () => {
+  // Animate feature cards
+  const featureCards = document.querySelectorAll('.feature-card');
+  createObserver(featureCards, (element) => {
+    animateSection(element, {
+      opacity: [0, 1],
+      translateY: [30, 0]
+    }, { 
+      delay: anime.stagger(150) 
+    });
+  }, { once: true });
+
+  // Animate room preview
+  const roomPreview = document.querySelector('.room-card');
+  createObserver(roomPreview, (element) => {
+    animateSection(element, {
+      opacity: [0, 1],
+      scale: [0.95, 1]
+    });
+  }, { once: true });
+
+  // Animate testimonials
+  const testimonials = document.querySelectorAll('.testimonials .bg-black\\/50');
+  createObserver(testimonials, (element) => {
+    animateSection(element, {
+      opacity: [0, 1],
+      translateX: [-20, 0]
+    }, { 
+      delay: anime.stagger(150) 
+    });
+  }, { once: true });
+
+  // Create sparkles effect
+  const createSparkles = () => {
+    const containers = document.querySelectorAll('.sparkle-container');
+    containers.forEach(container => {
+      // Create random number of sparkles (3-8)
+      const numSparkles = Math.floor(Math.random() * 5) + 3;
       
-      // CTA section animation
-      const ctaObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            // Animate heading and paragraph
-            anime({
-              targets: entry.target.querySelector('h2'),
-              translateY: [30, 0],
-              opacity: [0, 1],
-              duration: 1200,
-              easing: 'cubicBezier(.16,1,.3,1)'
-            });
-            
-            anime({
-              targets: entry.target.querySelector('p'),
-              translateY: [30, 0],
-              opacity: [0, 1],
-              delay: 200,
-              duration: 1200,
-              easing: 'cubicBezier(.16,1,.3,1)'
-            });
-            
-            // Animate buttons
-            anime({
-              targets: entry.target.querySelectorAll('button'),
-              scale: [0.9, 1],
-              opacity: [0, 1],
-              delay: anime.stagger(150, {start: 400}),
-              duration: 1000,
-              easing: 'cubicBezier(.16,1,.3,1)'
-            });
-            
-            ctaObserver.disconnect();
-          }
-        });
-      }, { threshold: 0.3 });
-      
-      // Observe CTA section
-      const ctaSection = document.querySelector('section:nth-of-type(4)');
-      if (ctaSection) {
-        ctaObserver.observe(ctaSection);
-      }
-      
-      // Footer animation
-      const footerObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            anime({
-              targets: 'footer > div > div',
-              translateY: [20, 0],
-              opacity: [0, 1],
-              delay: anime.stagger(150),
-              duration: 1000,
-              easing: 'cubicBezier(.16,1,.3,1)'
-            });
-            footerObserver.disconnect();
-          }
-        });
-      }, { threshold: 0.5 });
-      
-      footerObserver.observe(document.querySelector('footer'));
-      
-      // Avatar floating animation
-      anime({
-        targets: '.room-preview img.rounded-full',
-        translateY: function() {
-          return anime.random(-5, 5);
-        },
-        duration: function() {
-          return anime.random(3000, 5000);
-        },
-        loop: true,
-        direction: 'alternate',
-        easing: 'easeInOutSine',
-        delay: anime.stagger(300)
-      });
-      
-      // Active speaker indicator pulse animation
-      anime({
-        targets: '.room-preview .w-full.h-1',
-        opacity: [0.4, 0.8],
-        duration: 1500,
-        direction: 'alternate',
-        loop: true,
-        easing: 'easeInOutSine'
-      });
-      
-      // Smooth scrolling for navigation links
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute('href'));
-          if (target) {
-            window.scrollTo({
-              top: target.offsetTop,
-              behavior: 'smooth'
-            });
-          }
-        });
-      });
-      
-      // Button hover animation refinement
-      document.querySelectorAll('button').forEach(button => {
-        button.addEventListener('mouseenter', () => {
-          anime({
-            targets: button,
-            scale: 1.05,
-            boxShadow: '0 0 15px rgba(99, 102, 241, 0.7)',
-            duration: 300,
-            easing: 'cubicBezier(.16,1,.3,1)'
-          });
-        });
+      for (let i = 0; i < numSparkles; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.classList.add('sparkle');
         
-        button.addEventListener('mouseleave', () => {
-          anime({
-            targets: button,
-            scale: 1,
-            boxShadow: button.classList.contains('glow') ? '0 0 15px rgba(99, 102, 241, 0.5)' : '0 0 0 rgba(0,0,0,0)',
-            duration: 300,
-            easing: 'cubicBezier(.16,1,.3,1)'
-          });
+        // Random position
+        const top = Math.random() * 100;
+        const left = Math.random() * 100;
+        sparkle.style.top = `${top}%`;
+        sparkle.style.left = `${left}%`;
+        
+        // Random delay
+        sparkle.style.animationDelay = `${Math.random() * 2}s`;
+        
+        container.appendChild(sparkle);
+      }
+    });
+  };
+  
+  createSparkles();
+
+  // Smooth scrolling for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        window.scrollTo({
+          top: target.offsetTop - 100,
+          behavior: 'smooth'
         });
-      });
-    </script>
-  </body>
+      }
+    });
+  });
+});
+</script>
+</body>
 </html>
